@@ -1,20 +1,29 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { colors } from "./Wordle Assets/src/constants";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Hello! is it me you're looking for?</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Wordie</Text>
+      <StatusBar style="light" />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.black,
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
+  },
+  title: {
+    color: colors.lightgrey,
+    fontSize: 32,
+    fontWeight: "bold",
+    letterSpacing: 7,
+    textTransform: "uppercase",
+    paddingTop: 30,
   },
 });
