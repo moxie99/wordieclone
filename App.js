@@ -8,9 +8,14 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { colors, CLEAR, ENTER } from "./Wordle Assets/src/constants";
+import {
+  colors,
+  CLEAR,
+  ENTER,
+  colorsToEmoji,
+} from "./Wordle Assets/src/constants";
 import Keyboard from "./Wordle Assets/src/components/Keyboard";
-
+import * as Clipboard from "expo-clipboard";
 //the number of trials for word guess
 const numberOfTrials = 6;
 
@@ -21,10 +26,75 @@ const numberOfTrials = 6;
 const copyArray = (arr) => {
   return [...arr.map((rows) => [...rows])];
 };
+
+const getDayOfTheYear = () => {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now - start;
+  const oneDay = 1000 * 60 * 60 * 24;
+  const day = Math.floor(diff / oneDay);
+  return day;
+};
+const dayOfTheYear = getDayOfTheYear();
+
+const words = [
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+  "hello",
+  "world",
+  "guide",
+  "money",
+  "housing",
+];
 export default function App() {
   //the number of rows depends on the length of the word
-  const word = "hello";
+  const word = words[12];
   const letters = word.split("");
+  console.log(word);
+  // const letters = word.split("");
 
   //state will be used to monitor the state of the rows, the default row is passed as initial parameter
   const [rows, setRows] = useState(
@@ -34,6 +104,7 @@ export default function App() {
   //monitoring rows and columns of arrays
   const [currentRow, setCurrentRow] = useState(0);
   const [currentColumn, setCurrentColumn] = useState(0);
+  const [gameState, setGameState] = useState("playing");
 
   useEffect(() => {
     if (currentRow > 0) {
@@ -42,10 +113,14 @@ export default function App() {
   }, [currentRow]);
 
   const checkGameState = () => {
-    if (checkIfWon()) {
-      Alert.alert("Hurray, You've started the day very well");
-    } else if (checkIfLost) {
+    if (checkIfWon() && gameState !== "won") {
+      Alert.alert("Hurray", "You won", [
+        { text: "Share", onPress: shareScore },
+      ]);
+      setGameState("won");
+    } else if (checkIfLost() && gameState !== "lost") {
       Alert.alert("You Lost, try again tomorrow, you will do well.");
+      setGameState("lost");
     }
   };
 
@@ -54,12 +129,14 @@ export default function App() {
     return row.every((cell, i) => cell === letters[i]);
   };
   const checkIfLost = () => {
-    return currentRow === rows.length;
+    return !checkIfWon && currentRow === rows.length;
   };
   //keyboard pressed function
   const onKeyPressed = (key) => {
+    if (gameState !== "playing") {
+      return;
+    }
     const updatedRows = copyArray(rows);
-
     // action for when clear is pressed
     if (key === CLEAR) {
       const previousColumn = currentColumn - 1;
@@ -117,6 +194,19 @@ export default function App() {
   const greenCaps = getAllLettersWithColors(colors.primary);
   const yellowCaps = getAllLettersWithColors(colors.secondary);
   const greyCaps = getAllLettersWithColors(colors.darkgrey);
+
+  // share score function
+  const shareScore = (score) => {
+    const textToShareContent = rows
+      .map((row, i) =>
+        row.map((cell, j) => colorsToEmoji[getCellBGColor(i, j)]).join("")
+      )
+      .filter((row) => row)
+      .join("\n");
+    const textToShare = `Wordle \n ${textToShareContent}`;
+    Clipboard.setString(textToShare);
+    Alert.alert("Score copied to clipbaord!");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
