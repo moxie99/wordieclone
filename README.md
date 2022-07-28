@@ -19,3 +19,4 @@
 #Animations for letter and words
 -public leaderboard
 -save stats in database
+![Simulator Screen Shot - iPhone 12 Pro Max - 2022-07-28 at 11 42 03](https://user-images.githubusercontent.com/8932275/181488033-c724eda0-3be2-4b8d-92a3-e641b72ce344.png)
